@@ -1,8 +1,8 @@
-name: Go CD Continuous Deployment
+name: CD pipeline
 
 on:
  workflow_run:
-   workflows: ["Continuous Integration"]
+   workflows: ["CI Pipeline"]
    branches: [ main ]
    types:
      - completed
@@ -10,22 +10,18 @@ on:
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: [build-and-test]
     runs-on: ubuntu-latest
     steps:
-    - name: Download Artifact
-      uses: actions/download-artifact@v3
+     - uses: actions/download-artifact@v3
       with:
         name: build-artifacts
 
-    - name: Deploy to EC2
+    - name: Deploy
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SERVER_IP }}
         username: ec2-user
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          sudo systemctl stop listaPro.service
-          mv listaPro /home/ec2-user/listaPro/
-          cp .env /home/ec2-user/listaPro/.env
           sudo systemctl restart listaPro.service
