@@ -7,25 +7,31 @@ on:
     branches: [ main ]
 
 jobs: 
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+    steps: 
+    - uses: actions/checkout@v4
 
 
-    steps:
-    - name: Checkout do repositorio
-      uses: actions/checkout@v4
-
-    - name: Configurar Go 
+    - name: Setup Go
       uses: actions/setup-go@v4
       with:
-        go-version: 1.21
+	go-version: '1.21.8'
 
-    - name: Baixar dependencias
+    - name: Install Dependencies
       run: go mod tidy
 
-    - name: Verificar erros com go vet
-      run: go vet ./...
+    - name: Build
+      run: go build -v -o listaPro
 
-    - name: Rodar
+    - name: Run Tests
       run: go test -v ./...
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: |
+          listaPro
+          .env
 
