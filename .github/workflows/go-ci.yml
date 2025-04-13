@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Checkout do repositorio
-      uses: actions/checkout@out4
+      uses: actions/checkout@v4
 
     - name: Configurar Go 
       uses: actions/setup-go@v4

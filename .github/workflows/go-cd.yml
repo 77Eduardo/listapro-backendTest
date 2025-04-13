@@ -11,7 +11,7 @@ jobs:
 
     steps: 
     - name: Checkout do codigo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install o Go
       uses: actions/setup-go@v5
