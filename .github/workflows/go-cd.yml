@@ -2,25 +2,26 @@ name: Go CD
 
 on:
   push:
-    brances: [ main ]
+    brances: 
+      - main
 
 
 jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
+
     steps: 
-    - uses: actions/checkout@v4
+    - name: Checkout do codigo
+      uses: actions/checkout@v4
 
-    - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2
+    - name: Install SSH 
+      uses: webfactory/ssh-agent@v0.5.4
       with:
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
 
-    - name: Deploy to EC2
+    - name: Deploy to EC2 vi SSH
       run: |
-        scp -r . ec2-user@{{ secrets.SERVER_IP }}:/home/ec2-user/deploy
-	ssh ec2-user@${{ secrets.SERVER_IP }} "cd /home/ec2-user/deploy && go build -o app && s
-udo systemctl restart app.service"
+        ssh ec2-user@10.0.6.223 'cd /home/ec2-user/listaPro && git pull && go build -o app && systemctl restart app.service'
