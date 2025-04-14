@@ -2,36 +2,38 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
-jobs: 
+jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    steps: 
-    - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
 
-    - name: Setup Go
-      uses: actions/setup-go@v4
-      with:
-	go-version: '1.21.8'
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.8'
 
-    - name: Build
-      run: go build -v -o listaPro
 
-    - name: Run Tests
-      run: go test -v ./...
+      - name: Build
+        run: go build -v -o listaPro
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-artifacts
-        path: |
-          listaPro
-          .env.example
-          go.mod
-	  go.sum
+      - name: Run Tests
+        run: go test -v ./...
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with: 
+          name: buil-artifacts
+          path: | 
+            listaPro
+            .env.exemplo
+            go.mod
+            go.sum
+
 

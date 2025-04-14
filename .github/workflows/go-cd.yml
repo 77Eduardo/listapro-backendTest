@@ -1,27 +1,28 @@
 name: CD pipeline
 
 on:
- workflow_run:
-   workflows: ["CI Pipeline"]
-   branches: [ main ]
-   types:
-     - completed
-
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    branches: [main]
+    types:
+      - completed
 
 jobs:
   deploy:
-    needs: [build-and-test]
     runs-on: ubuntu-latest
     steps:
-     - uses: actions/download-artifact@v3
-      with:
-        name: build-artifacts
-
-    - name: Deploy
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SERVER_IP }}
-        username: ec2-user
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          sudo systemctl restart listaPro.service
+      - name: Download Artifact
+	uses: actions/download-artifact@v3
+	with:
+	  name: build-artifacts
+ 
+      - name: Deploy
+ 	uses: appleboy/ssh-action@master
+	with:
+	  host: ${{ secrets.SERVER_IP }}
+	  username: ec2-user
+	  key: ${{ secrets.SHH_PRIVATE_KEY}}
+	  script: | 
+	    sudo systemctl stop listaPro.service
+	    mv listaPro /home/ec2-user/listaPro/
+	    sudo systemctl restart listaPro.service
